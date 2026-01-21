@@ -29,6 +29,9 @@ public class Product {
     @Column(nullable = false)
     private int stockQuantity;
 
+    @Column
+    private String imageUrl;
+
     // Category: many products belong to one category
     @ManyToOne
     @JoinColumn(name = "categories_id", nullable = false)
