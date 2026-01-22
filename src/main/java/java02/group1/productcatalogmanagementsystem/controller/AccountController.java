@@ -6,6 +6,7 @@ import java02.group1.productcatalogmanagementsystem.dto.request.AccountRequest;
 import java02.group1.productcatalogmanagementsystem.dto.request.LoginRequest;
 import java02.group1.productcatalogmanagementsystem.dto.response.AccountResponse;
 import java02.group1.productcatalogmanagementsystem.service.AccountService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @SecurityRequirement(name = "api")
 @RequestMapping("/api/accounts")
+@RequiredArgsConstructor
 public class AccountController {
 
-    @Autowired
-    AccountService accountService;
+    private final AccountService accountService;
 
     @PostMapping("/register")
     public ResponseEntity<AccountResponse> register(@RequestBody @Valid AccountRequest request) {
