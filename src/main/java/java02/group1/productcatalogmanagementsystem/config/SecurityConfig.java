@@ -3,6 +3,7 @@ package java02.group1.productcatalogmanagementsystem.config;
 import java02.group1.productcatalogmanagementsystem.service.AccountService;
 import java02.group1.productcatalogmanagementsystem.exception.CustomAccessDeniedHandler;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,16 +20,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    AccountService accountService;
 
-    @Autowired
-    Filter filter;
+    private final Filter filter;
 
-    @Autowired
-    CustomAccessDeniedHandler customAccessDeniedHandler;
+
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -56,7 +55,6 @@ public class SecurityConfig {
                                 .authenticated()
 
                 )
-                .userDetailsService(accountService)
                 .exceptionHandling(handler -> handler.accessDeniedHandler(customAccessDeniedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).build();
