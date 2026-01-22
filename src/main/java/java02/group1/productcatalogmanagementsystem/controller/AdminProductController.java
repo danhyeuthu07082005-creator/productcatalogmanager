@@ -33,8 +33,6 @@ public class AdminProductController {
         return ResponseEntity.ok(productService.createProduct(productDTO));
     }
 
-        // 9) UPDATE product
-    // PUT /api/products/{id}
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductResponse> updateProduct(
@@ -43,8 +41,6 @@ public class AdminProductController {
         return ResponseEntity.ok(productService.updateProduct(id, request));
     }
 
-    // 10) DELETE product
-    // DELETE /api/products/{id}
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, String>> deleteProduct(@PathVariable Long id) {
