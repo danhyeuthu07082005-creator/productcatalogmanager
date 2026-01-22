@@ -64,14 +64,14 @@ public class ProductService {
     /**
      * Teammate: Create Product (có upload ảnh)
      */
-    public ProductResponse createProduct(ProductRequest dto, MultipartFile image) {
+    public ProductResponse createProduct(ProductRequest dto) {
 
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + dto.getCategoryId()));
 
         // Nếu client không gửi ảnh, bạn có thể để null hoặc throw. Mình để null-safe:
-        String imageUrl = (image != null && !image.isEmpty())
-                ? cloudinaryService.uploadImage(image)
+        String imageUrl = (dto.getImage() != null && !dto.getImage().isEmpty())
+                ? cloudinaryService.uploadImage(dto.getImage())
                 : null;
 
         Product product = new Product();
