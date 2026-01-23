@@ -1,5 +1,6 @@
 package java02.group1.productcatalogmanagementsystem.controller;
 
+import java02.group1.productcatalogmanagementsystem.dto.request.CategoryRequest;
 import java02.group1.productcatalogmanagementsystem.entity.Category;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -38,14 +39,22 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
+<<<<<<< src/main/java/java02/group1/productcatalogmanagementsystem/controller/CategoryController.java
+    public Category create(@RequestBody CategoryRequest category) {
+=======
     @PreAuthorize("hasRole('ADMIN')")
-    public Category create(@RequestBody Category category) {
+    public Category create(@RequestBody  CategoryRequest category) {
+>>>>>>> src/main/java/java02/group1/productcatalogmanagementsystem/controller/CategoryController.java
         return categoryService.create(category);
     }
 
     @PutMapping("/id/{id}")
+<<<<<<< src/main/java/java02/group1/productcatalogmanagementsystem/controller/CategoryController.java
+    public Category update(@PathVariable Long id, @RequestBody CategoryRequest updatedCategory) {
+=======
     @PreAuthorize("hasRole('ADMIN')")
-    public Category update(@PathVariable Long id, @RequestBody Category updatedCategory) {
+    public Category update(@PathVariable Long id, @RequestBody CaCategoryRequest pdatedCategory) {
+>>>>>>> src/main/java/java02/group1/productcatalogmanagementsystem/controller/CategoryController.java
         return categoryService.update(id, updatedCategory);
     }
 
