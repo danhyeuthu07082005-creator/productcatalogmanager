@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import java02.group1.productcatalogmanagementsystem.dto.request.CategoryRequest;
 import java02.group1.productcatalogmanagementsystem.entity.Category;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import java02.group1.productcatalogmanagementsystem.service.implement.CategoryServiceImpl;
+import java02.group1.productcatalogmanagementsystem.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 
 public class CategoryController {
-    private final CategoryServiceImpl categoryService;
+    private final CategoryService categoryService;
 
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories() {
