@@ -3,7 +3,7 @@ package java02.group1.productcatalogmanagementsystem.controller;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java02.group1.productcatalogmanagementsystem.dto.response.ProductResponse;
-import java02.group1.productcatalogmanagementsystem.service.implement.ProductServiceImpl;
+import java02.group1.productcatalogmanagementsystem.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
 public class PublicProductController {
-    private final ProductServiceImpl productService;
+    private final ProductService productService;
 
     @GetMapping("/category/{id}")
     public ResponseEntity<List<ProductResponse>> filterByCategory(@PathVariable Long id) {
