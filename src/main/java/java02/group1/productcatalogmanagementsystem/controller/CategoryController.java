@@ -21,7 +21,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("permitAll()")
     public List<Category> getAllCategories() {
         return categoryService.getAllCategories();
     }
@@ -56,4 +56,3 @@ public class CategoryController {
         categoryService.deleteCategory(id);
     }
 }
-
