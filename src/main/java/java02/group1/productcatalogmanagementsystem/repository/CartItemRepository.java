@@ -1,0 +1,15 @@
+package java02.group1.productcatalogmanagementsystem.repository;
+
+import java02.group1.productcatalogmanagementsystem.entity.Cart;
+import java02.group1.productcatalogmanagementsystem.entity.CartItem;
+import java02.group1.productcatalogmanagementsystem.entity.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface CartItemRepository extends JpaRepository<CartItem, Long> {
+    Optional<CartItem> findByCartIdAndProductId(Long cartId, Long productId);
+    void deleteByCartIdAndProductId(Long cartId, Long productId);
+}
