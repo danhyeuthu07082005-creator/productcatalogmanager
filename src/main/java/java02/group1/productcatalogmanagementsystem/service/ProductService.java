@@ -82,6 +82,11 @@ public class ProductService {
         product.setPrice(req.getPrice());
         product.setStockQuantity(req.getStockQuantity());
 
+        // Update imageUrl if provided
+        if (req.getImageUrl() != null && !req.getImageUrl().isBlank()) {
+            product.setImageUrl(req.getImageUrl().trim());
+        }
+
         if (req.getStatus() != null && !req.getStatus().isBlank()) {
             product.setStatus(req.getStatus().trim().toUpperCase());
         }
@@ -120,5 +125,26 @@ public class ProductService {
         resp.setOutOfStock(p.getStockQuantity() == 0);
 
         return resp;
+    }
+
+    public ProductResponse getActiveProductById(Long id) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
+
+        if (!"ACTIVE".equalsIgnoreCase(product.getStatus())) {
+            throw new EntityNotFoundException("Product not found");
+        }
+
+        return toResponse(product);
+    }
+
+    public List<ProductResponse> searchActiveProductsByName(String name) {
+
+        return productRepository
+                .findByStatusAndNameContainingIgnoreCase("ACTIVE", name)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 }

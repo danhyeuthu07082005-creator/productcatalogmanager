@@ -1,7 +1,9 @@
 package java02.group1.productcatalogmanagementsystem.service;
 
+import java02.group1.productcatalogmanagementsystem.dto.request.CategoryRequest;
 import java02.group1.productcatalogmanagementsystem.entity.Category;
 import jakarta.transaction.Transactional;
+import java02.group1.productcatalogmanagementsystem.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     @Transactional
     public List<Category> getAllCategories() {
@@ -31,15 +34,26 @@ public class CategoryService {
     }
 
     @Transactional
-    public Category create(Category category) {
+    public Category create(CategoryRequest categoryRequest) {
+        Category category = new Category();
+        category.setName(categoryRequest.getName());
         return categoryRepository.save(category);
     }
 
     @Transactional
-    public Category update(Long id, Category updatedCategory) {
+    public Category update(Long id, CategoryRequest updatedCategory) {
         Category existingCategory = getById(id);
         existingCategory.setName(updatedCategory.getName());
-        existingCategory.setDescription(updatedCategory.getDescription());
         return categoryRepository.save(existingCategory);
+    }
+
+    @Transactional
+    public void deleteCategory(Long id) {
+
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+
+        productRepository.deleteByCategory_Id(id);
+        categoryRepository.delete(category);
     }
 }

@@ -3,6 +3,7 @@ package java02.group1.productcatalogmanagementsystem.config;
 import java02.group1.productcatalogmanagementsystem.service.AccountService;
 import java02.group1.productcatalogmanagementsystem.exception.CustomAccessDeniedHandler;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,16 +20,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    AccountService accountService;
 
-    @Autowired
-    Filter filter;
+    private final Filter filter;
 
-    @Autowired
-    CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CorsConfig corsConfig;
+
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -50,15 +50,25 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         req -> req
-                                .requestMatchers("/**")
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated()
-
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/api/accounts/login",
+                                "/api/accounts/register",
+                                "/api/products/*",
+                                "/api/categories"
+                        ).permitAll()
+                        .requestMatchers("/api/admin/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers("/api/products/**")
+                        .hasAnyRole("ADMIN", "CUSTOMER")
+                        .anyRequest()
+                        .authenticated()
                 )
-                .userDetailsService(accountService)
                 .exceptionHandling(handler -> handler.accessDeniedHandler(customAccessDeniedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(corsConfig, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).build();
     }
 

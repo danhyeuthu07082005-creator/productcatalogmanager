@@ -21,10 +21,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @Tag(name = "Admin Products", description = "Administrative product management endpoints")
 @SecurityRequirement(name = "api")
 @RequestMapping("/api/admin/products")
-//@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 public class AdminProductController {
     private final ProductService productService;
+    private final java02.group1.productcatalogmanagementsystem.service.CloudinaryService cloudinaryService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductResponse> createProduct(
@@ -46,5 +47,17 @@ public class AdminProductController {
     public ResponseEntity<Map<String, String>> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok(Collections.singletonMap("message", "Product deleted successfully"));
+    }
+
+    /**
+     * Upload image to Cloudinary and return the URL
+     * Use this URL for updating product image via updateProduct endpoint
+     */
+    @PostMapping(value = "/upload-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, String>> uploadImage(
+            @RequestParam("image") org.springframework.web.multipart.MultipartFile image) {
+        String imageUrl = cloudinaryService.uploadImage(image);
+        return ResponseEntity.ok(Collections.singletonMap("imageUrl", imageUrl));
     }
 }

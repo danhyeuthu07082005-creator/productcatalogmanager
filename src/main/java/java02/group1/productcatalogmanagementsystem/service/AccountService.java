@@ -9,10 +9,12 @@ import java02.group1.productcatalogmanagementsystem.exception.exception.Authenti
 import java02.group1.productcatalogmanagementsystem.repository.AccountRepository;
 import java02.group1.productcatalogmanagementsystem.repository.RoleRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,25 +24,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
 
-    @Autowired
-    AccountRepository accountRepository;
-
-    @Autowired
-    RoleRepository roleRepository;
-
-    @Autowired
-    TokenService tokenService;
-
-    @Autowired
-    ModelMapper modelMapper;
-
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    private final AccountRepository accountRepository;
+    private final RoleRepository roleRepository;
+    private final TokenService tokenService;
+    private final ModelMapper modelMapper;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final PasswordEncoder passwordEncoder;
 
     // Convert Account entity to AccountResponse DTO
     private AccountResponse toResponse(Account account) {
@@ -73,7 +65,7 @@ public class AccountService implements UserDetailsService {
     @Transactional
     public AccountResponse login(LoginRequest request) {
 
-        authenticationManager.authenticate(
+        authenticationConfiguration.getAuthenticationManager().authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword()
