@@ -5,6 +5,7 @@ import java02.group1.productcatalogmanagementsystem.dto.request.UpdateProductReq
 import java02.group1.productcatalogmanagementsystem.dto.response.ProductResponse;
 import java02.group1.productcatalogmanagementsystem.entity.Category;
 import java02.group1.productcatalogmanagementsystem.entity.Product;
+import java02.group1.productcatalogmanagementsystem.repository.CartItemRepository;
 import java02.group1.productcatalogmanagementsystem.repository.CategoryRepository;
 import java02.group1.productcatalogmanagementsystem.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,6 +26,7 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
     private final CloudinaryService cloudinaryService;
+    private final CartItemRepository cartItemRepository;
 
     @Override
     public List<ProductResponse> getActiveProducts(Long categoryId) {
@@ -95,6 +97,18 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
 
+        if (req.getStockQuantity() != null) {
+            // Lấy tổng số lượng sản phẩm này đang nằm trong các giỏ hàng
+            Long totalInCarts = cartItemRepository.getTotalQuantityInCarts(id);
+
+            if (req.getStockQuantity() < totalInCarts) {
+                throw new IllegalArgumentException(
+                        "Không thể cập nhật số lượng kho xuống " + req.getStockQuantity() +
+                                ". Hiện đang có " + totalInCarts + " sản phẩm nằm trong giỏ hàng của khách.");
+            }
+            product.setStockQuantity(req.getStockQuantity());
+        }
+
         if (req.getCategoryId() != null) {
             Category category = categoryRepository.findById(req.getCategoryId())
                     .orElseThrow(() -> new EntityNotFoundException(
@@ -124,6 +138,10 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
+
+        if (cartItemRepository.existsByProduct_Id(id)) {
+            throw new IllegalArgumentException("Không thể xóa sản phẩm này vì đang có khách hàng thêm vào giỏ hàng.");
+        }
 
         if (!"ACTIVE".equalsIgnoreCase(product.getStatus())) {
             throw new EntityNotFoundException("Product is not ACTIVE or already deleted");
