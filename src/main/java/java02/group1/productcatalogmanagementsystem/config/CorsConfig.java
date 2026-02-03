@@ -40,6 +40,7 @@ public class CorsConfig extends OncePerRequestFilter {
                 origin.equals("http://127.0.0.1:5173") ||
                 origin.equals("https://productcatalog-pf31yzavo-minh-chaus-projects-11c47b5c.vercel.app") ||
                         origin.equals("https://vercel.com/danhs-projects-0da46a51/productcatalogmanager-fe") ||
+                        origin.equals("")||
                 origin.endsWith(".vercel.app")
         );
 
